@@ -1,0 +1,125 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import plotly_plot as pp
+import os
+from operator import add, mul, truediv
+from scipy import fftpack
+from decimal import Decimal
+import math
+
+read_file = r'E:\data_mean_26.txt'
+no_plot = 1
+
+file = open(read_file, 'r+')
+file2 = open(r'E:\pn_data/' + os.path.basename(read_file), 'w+')
+
+eip=[];eqp=[];pip=[];pqp=[];lip=[];lqp=[];count=[];
+ei_sr=[];pi_sr=[];li_sr=[];eq_sr=[];pq_sr=[];lq_sr=[];
+dic = {1:eip,2:eqp,3:pip,4:pqp,5:lip,6:lqp, 7:count}
+
+def twoscompliment(data):
+    out = hex((int('FFFFFFFF', 16) - int(data, 16)) + 1)
+    out = int(out, 16)
+#    out = np.binary_repr((-data),width=32)
+##    out = np.binary_repr(int(str('-' + data[2:]),2), width=32)
+#    out = int(str(out[-31:]), 2)
+    return out
+        
+def readfile(line, i):
+    line_sep = line.split()
+    msb = line_sep[1][:1]
+    msb_dec = int(msb, 16)
+    if(msb_dec > 7):
+#        val = twoscompliment((int(line_sep[1], 16)))
+        val = twoscompliment(line_sep[1])
+        val = -val
+    else:
+        val = int(line_sep[1], 16)
+  
+    file2.write(line_sep[0]  + '      ' + line_sep[1] + '     ' + str(val) + '    '+ str(val*val) + '      '+str(i))
+    file2.write('\n')
+    return val
+new_data=[];
+i=0;
+while 1:
+    try:
+        i = i+1
+        line = file.readline()
+        if (line == ''):
+            break 
+#        new_data.append(readfile(line, i))
+        dic[i].append(readfile(line, i))
+        if (i == no_plot):
+            i=0;
+        
+    except:
+        pass
+data=[];
+####################################################################################
+##start
+x = list(range(0, len(eip)))
+
+pp.plot(x, eip, plot=False, filename = 'eip')
+pp.plot(x, eqp, plot=False, filename = 'eqp')
+
+eip_s = list(map(mul, eip, eip))
+eqp_s = list(map(mul, eqp, eqp))
+val_e = list(map(add, eip_s, eqp_s))
+val_e = np.sqrt(np.array(val_e))
+
+#pp.plot(x, eip_s, plot=False, filename = 'eip_s')
+#pp.plot(x, eqp_s, plot=False, filename = 'eqp_s')
+
+pp.plot(x, val_e, plot=False, filename = 'early_sqrt_i^2+q^2')
+################################################################################
+#
+pp.plot(x, pip, plot=False, filename = 'pip')
+pp.plot(x, pqp, plot=False, filename = 'pqp')
+
+pip_s = list(map(mul, pip, pip))
+pqp_s = list(map(mul, pqp, pqp))
+val_p = list(map(add, pip_s, pqp_s))
+val_p = np.sqrt(np.array(val_p))
+#val_pp = list(map(truediv, val_p, val_p))
+
+#pp.plot(x, pip_s, plot=False, filename = 'pip_s')
+#pp.plot(x, pqp_s, plot=False, filename = 'pqp_s')
+
+pp.plot(x, val_p, plot=False, filename = 'prompt_sqrt_i^2+q^2')
+###################################################################################
+#
+pp.plot(x, lip, plot=False, filename = 'lip')
+pp.plot(x, lqp, plot=False, filename = 'lqp')
+
+lip_s = list(map(mul, lip, lip))
+lqp_s = list(map(mul, lqp, lqp))
+val_l = list(map(add, lip_s, lqp_s))
+#val_l = list(map(truediv, val_l, val_p))
+val_l = np.sqrt(np.array(val_l))
+
+#pp.plot(x, lip_s, plot=False, filename = 'lip_s')
+#pp.plot(x, lqp_s, plot=False, filename = 'lqp_s')
+
+pp.plot(x, val_l, plot=True, filename = 'late_sqrt_i^2+q^2')
+## end
+###########################################################################################
+#pp.plot(x, count, plot=True, filename = 'counter')
+
+######################################################################################
+### IMB 3 point plot  ///  intr
+#x_epl = list(range(0,3))
+#epl_data=[];epl_data100=[];
+#pp.plot(x_epl, epl_data100, plot=False, filename = 'rand', new_plot=True)
+#con = np.concatenate((val_e, val_p, val_l), axis=0)
+#for i in np.arange(0,int(len(con)/3)):
+##    print(i)
+#    epl_data.append(val_e[i]/val_p[i])
+#    epl_data.append(val_p[i]/val_p[i])
+#    epl_data.append(val_l[i]/val_p[i])
+#    
+#    pp.plot(x_epl, epl_data, plot=False, filename = 'epl_'+str(i))
+#    epl_data=[];
+#pp.plot(x_epl, epl_data100, plot=True, filename = 'intr')
+#########################################################################################
+file.close()
+file2.close()   
