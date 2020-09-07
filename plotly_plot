@@ -1,0 +1,180 @@
+import plotly
+import plotly.graph_objs as go
+import os
+#from plotly import plotly
+
+complete_data=[];
+def plot(x_data, y_data, filename='test', plot=True, x_axis='x_axis', y_axis='y_axis', new_plot=False):
+    global complete_data;
+    xy_data = go.Scatter( x=x_data, y=y_data, mode='lines+markers', name=filename, marker=dict(size=4), line=dict(width=1))
+
+    if (new_plot == True):
+        complete_data=[];
+        
+    complete_data.append(xy_data)
+    
+    if (plot == False):
+        return
+#    if (filename == 'test'):
+#        title_name = ''
+#    else:
+#        title_name = filename
+    layout = go.Layout(
+#    title= title_name,
+    xaxis=dict(
+        title=x_axis,
+        titlefont=dict(
+            family='Courier New, monospace',
+            size=18,
+            color='green'
+            )
+#        autorange=True,
+#        showgrid=True,
+#        zeroline=True,
+#        showline=True,
+#        showticklabels=True,
+#        tickmode='linear',
+#        ticks='outside',
+#        tick0=0,
+#        dtick=0.25,
+#        ticklen=8,
+#        tickwidth=4,
+#        tickcolor='#000',
+#        mirror='ticks',
+#        gridcolor='#bdbdbd',
+#        gridwidth=2,
+#        zerolinecolor='#969696',
+#        zerolinewidth=100,
+#        linecolor='#636363',
+#        linewidth=6,
+#        range=[1,2]
+    ),
+    yaxis=dict(
+        title=y_axis,
+        titlefont=dict(
+            family='Courier New, monospace',
+            size=18,
+            color='green'
+            )
+#        autorange=True,
+#        showgrid=True,
+#        zeroline=True,
+#        showline=True,
+#        showticklabels=True,
+##        tickmode='linear',
+##        ticks='outside',
+#        tick0=0,
+#        dtick=0.25,
+#        ticklen=8,
+#        tickwidth=4,
+#        tickcolor='#000'
+        )
+    )
+    
+    ##################################################################################
+#    updatemenus=list([
+#        dict(
+#            buttons=list([
+#                dict(
+#                    args=[{'visible': [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, 
+#                                       True, True, True,True, True, True]}],
+#                    label='All',
+#                    method='update',
+#                ),
+#                dict(
+#                    args=[{'visible': [True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, 
+#                                       False, False, False,False, False, False]}],
+#                    label='offset',
+#                    method='update',
+#                ),
+#                dict(
+#                    args=[{'visible': [False, True, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, 
+#                                       False, False, False,False, False, False]}],
+#                    label='CN_PRN_1',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, True, True, False, False, False, False, False, False, False, False, False, False, False, False, 
+#                                       False, False, False, False, False, False]}],
+#                    label='CN_PRN_2',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, True, True, False, False, False, False, False, False, False, False, False, False, 
+#                                       False, False, False, False, False, False]}],
+#                    label='CN_PRN_3',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, False, False, True, True, False, False, False, False, False, False, False, False, 
+#                                       False, False, False, False, False, False]}],
+#                    label='CN_PRN_4',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, False, False, False, False, True, True, False, False, False, False, False, False, 
+#                                       False, False, False, False, False, False]}],
+#                    label='CN_PRN_5',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, False, False, False, False, False, False, True, True, False, False, False, False, 
+#                                       False, False, False, False, False, False]}],
+#                    label='CN_PRN_6',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, False, False, False, False, False, False, False, False, True, True, False, False, 
+#                                       False, False, False, False, False, False]}],
+#                    label='CN_PRN_7',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, True, 
+#                                       False, False, False, False, False, False]}],
+#                    label='CN_PRN_8',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, 
+#                                       True, True, False, False, False, False]}],
+#                    label='CN_PRN_9',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, 
+#                                       False, False, True, True, False, False]}],
+#                    label='CN_PRN_10',
+#                    method='update'
+#                ),
+#                dict(
+#                    args=[{'visible': [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, 
+#                                       False, False, False, False, True, True]}],
+#                    label='CN_PRN_11',
+#                    method='update'
+#                )
+#            ]),
+#            direction = 'down',
+#            pad = {'r': 10, 't': 10},
+#            showactive = True,
+#            x = 0.1,
+#            xanchor = 'left',
+#            y = 1.3,
+#            yanchor = 'top' 
+#        ),
+#    ])
+#
+#    annotations = list([
+#        dict(text='Choose<br>PRN:', x=0, y=1.28, yref='paper', align='left', showarrow=False)
+#    ])
+#    
+#    layout['updatemenus'] = updatemenus
+#    layout['annotations'] = annotations
+    #####################################################################################
+    fig = dict(data=complete_data, layout=layout)
+    filename = filename  + '.html'
+    file_path = r'E:\spyder_code\plotly'
+    fig_path = os.path.join(file_path, filename)
+    
+    plotly.offline.plot(fig, filename= fig_path, auto_open=True)
+    return
